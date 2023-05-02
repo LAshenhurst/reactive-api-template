@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @GetMapping("/roles/{role}")
-    @Operation(summary = "Get a list of users with a given role")
+    @Operation(summary = "Get a list of users with a given role (Required ADMIN role)")
     public Mono<ResponseEntity<List<String>>> getUsersByRole(@NotNull @PathVariable String role) {
         Role validRole = Role.getRole(role);
         if (validRole == null) {
