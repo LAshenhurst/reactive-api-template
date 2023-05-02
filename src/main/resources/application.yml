@@ -1,0 +1,35 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb?options=DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    #url: r2dbc:h2:file:///~/testdb?optiona=DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    platform: h2
+    driver.class: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate.ddl-auto: none
+  h2.console.enabled: true
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  liquibase:
+    contexts: h2
+    change-log: classpath:/liquibase/changelog-master.xml
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    #url: jdbc:h2:file:~/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+
+server:
+  app-id: reactive-api-template
+  port: 8083
+
+security:
+  passwordEncoder:
+    secret: hashingalgorithmsecret
+    iteration: 33
+    keyLength: 256
+  jwt:
+    secret: ThisIsSecretForJWTHS512SignatureAlgorithmThatMUSTHave64ByteLength
+    expiration: 28800
+
+logging:
+  level:
+    com.template.reactive: DEBUG
