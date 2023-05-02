@@ -21,14 +21,10 @@ import java.util.Collections;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    //password is password
-    private static final String PASSWORD = "Y/zMAg4P07PpGZLiyWutYveUz3f8TV1S0kMlGxWG4o0=";
-
-
 
     @Override
     public Mono<User> findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findById(username)
                 .map(userMapper::toDomain)
                 .doOnSubscribe(sub -> log.debug("Executing findByUsername service"))
                 .doFinally(sub -> log.debug("Executed findByUsername service"));
@@ -52,7 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @EventListener(ApplicationReadyEvent.class)
     private void addUsers() {
-        userRepository.save(userMapper.toEntity(new User("admin", PASSWORD, Collections.singleton(Role.ADMIN)))).subscribe();
-        userRepository.save(userMapper.toEntity(new User("user", PASSWORD, Collections.singleton(Role.USER)))).subscribe();
+        //password is password
+        final String password = "Y/zMAg4P07PpGZLiyWutYveUz3f8TV1S0kMlGxWG4o0=";
+        userRepository.save(userMapper.toEntity(new User("admin", password, Collections.singleton(Role.ADMIN)))).subscribe();
+        userRepository.save(userMapper.toEntity(new User("user", password, Collections.singleton(Role.USER)))).subscribe();
     }
 }
