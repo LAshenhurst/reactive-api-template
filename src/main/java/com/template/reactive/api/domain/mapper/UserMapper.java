@@ -29,7 +29,7 @@ public class UserMapper {
 
     public User toDomain(UserEntity source) {
         Set<Role> roles = Arrays.stream(source.getRoles().split(","))
-                .map(Role::getRole)
+                .map(Role::valueOf)
                 .collect(Collectors.toSet());
 
         return new User(source.getUsername(), source.getPassword(), roles);

@@ -1,5 +1,6 @@
 package com.template.reactive.api.configuration.filters;
 
+import com.template.reactive.api.common.AppConstants;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -9,11 +10,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class ResponseFilter implements WebFilter {
-    private static final String TRACE_ID_HEADER = "X-Trace-Id";
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        exchange.getResponse().getHeaders().add(TRACE_ID_HEADER, MDC.get("traceId"));
+        exchange.getResponse().getHeaders().add(AppConstants.TRACE_ID_HEADER, MDC.get("traceId"));
         return chain.filter(exchange);
     }
 }

@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 public class UserController {
     private final JWTHelper jwtHelper;
