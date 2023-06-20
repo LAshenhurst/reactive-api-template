@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7da285bb-5cc4-4a1f-bf79-bb212ea26a1d",
+		"_postman_id": "9840cc72-4a85-4c6d-8fd7-1c7bd7148c08",
 		"name": "User",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ad8367a5-10a1-4b7b-b088-1d7417830875",
 						"exec": [
 							"const environmentToken = \"token\"; // the name of the environment variable",
 							"const newToken = pm.response.json().token;",
@@ -63,7 +62,7 @@
 			"response": []
 		},
 		{
-			"name": "decode-jwt/{{token}}",
+			"name": "decode-jwt",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -93,6 +92,142 @@
 					"path": [
 						"decode-jwt",
 						"{{token}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendNotification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"message\": \"Test Notification Message\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/notification?user=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"notification"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUsersByRole",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/roles/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"roles",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRoles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/roles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscribe",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/event-stream",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/subscribe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"subscribe"
 					]
 				}
 			},

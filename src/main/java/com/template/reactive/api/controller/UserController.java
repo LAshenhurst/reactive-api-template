@@ -4,6 +4,9 @@ import com.template.reactive.api.common.exceptions.ApiException;
 import com.template.reactive.api.configuration.security.PBKDF2Encoder;
 import com.template.reactive.api.domain.Role;
 import com.template.reactive.api.domain.User;
+import com.template.reactive.api.domain.mapper.NotificationMapper;
+import com.template.reactive.api.domain.notification.Notification;
+import com.template.reactive.api.domain.notification.NotificationRequest;
 import com.template.reactive.api.domain.security.AuthenticationRequest;
 import com.template.reactive.api.domain.security.AuthenticationResponse;
 import com.template.reactive.api.helper.JWTHelper;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +41,7 @@ public class UserController {
     private final JWTHelper jwtHelper;
     private final UserService userService;
     private final PBKDF2Encoder passwordEncoder;
+    private final NotificationMapper notificationMapper;
     private final NotificationService notificationService;
     private final AuthenticationService authenticationService;
 
@@ -74,7 +79,7 @@ public class UserController {
         Role validRole = Role.getRole(role);
         if (validRole == null) {
             String errorMessage = "Invalid Role provided. Valid Roles are: " + String.join(", ", ROLES);
-            throw new ApiException(HttpStatus.BAD_REQUEST, errorMessage);
+            return Mono.error(new ApiException(HttpStatus.BAD_REQUEST, errorMessage));
         }
 
         Mono<List<String>> responseFlow = userService.findByRole(validRole)
@@ -90,5 +95,17 @@ public class UserController {
     @Operation(summary = "Subscribe to receive notifications")
     public Flux<ServerSentEvent<String>> subscribe() {
         return SecurityHelper.getUsername().flatMapMany(notificationService::subscribe);
+    }
+
+    @PostMapping(value = "/notification")
+    @Operation(summary = "Submit a test notification to be received by a given user through the subscription system (ADMIN ONLY)")
+    public Mono<ResponseEntity<Void>> sendNotification(@Valid @RequestBody NotificationRequest notificationRequest,
+                                                       @NotNull @RequestParam String user) {
+        Notification notification = notificationMapper.toNotification(notificationRequest.getMessage(), user);
+
+        Mono<Void> responseFlow = Mono.fromRunnable(() -> notificationService.emit(notification));
+
+        return authenticationService.checkAdminPermissionAndContinue(responseFlow)
+                .map(ResponseEntity::ok);
     }
 }

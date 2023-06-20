@@ -7,5 +7,7 @@ public final class AppConstants {
 
     public static final String TRACE_ID_HEADER = "X-Trace-Id";
 
+    public static final String DATETIME_PATTERN = "dd-MM-yyyy'T'HH:mm:ss.SSSZ";
+
     private AppConstants() { throw new IllegalStateException("Utility class."); }
 }

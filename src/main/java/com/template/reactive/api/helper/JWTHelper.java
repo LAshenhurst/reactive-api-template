@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JWTHelper {
+public final class JWTHelper {
     @Value("${security.jwt.secret}")
     private String secret;
 

@@ -1,5 +1,6 @@
 package com.template.reactive.api.service.impl;
 
+import com.template.reactive.api.common.exceptions.ApiException;
 import com.template.reactive.api.domain.Role;
 import com.template.reactive.api.domain.User;
 import com.template.reactive.api.domain.mapper.UserMapper;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<User> findByUsername(String username) {
         return userRepository.findById(username)
+                .switchIfEmpty(Mono.error(new ApiException(HttpStatus.BAD_REQUEST, "Username not found.")))
                 .map(userMapper::toDomain)
                 .doOnSubscribe(sub -> log.debug("Executing findByUsername service"))
                 .doFinally(sub -> log.debug("Executed findByUsername service"));

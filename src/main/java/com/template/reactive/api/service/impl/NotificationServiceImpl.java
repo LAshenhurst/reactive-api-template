@@ -1,6 +1,6 @@
 package com.template.reactive.api.service.impl;
 
-import com.template.reactive.api.domain.Notification;
+import com.template.reactive.api.domain.notification.Notification;
 import com.template.reactive.api.domain.mapper.NotificationMapper;
 import com.template.reactive.api.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +25,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Flux<ServerSentEvent<String>> subscribe(String username) {
         return SINK.asFlux()
-                .doOnSubscribe(sub -> {
-                    emit(notificationMapper.generateSubscribeNotification(username));
-                    log.info("Current subscribers: {}", SINK.currentSubscriberCount());
-                })
+                .doOnSubscribe(sub -> emit(notificationMapper.generateSubscribeNotification(username)))
                 .filter(notification -> notification.getUsers().contains(username))
-                .map(notification -> ServerSentEvent
-                        .builder(notification.getEvent() + String.format(". Event timestamp: %s", notification.getTimestamp()))
-                        .build()
-                );
+                .map(notification -> ServerSentEvent.builder(notification.toJsonString()).build());
     }
 
     @Override

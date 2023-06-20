@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 import java.security.Principal;
 
-public class SecurityHelper {
+public final class SecurityHelper {
     public static Mono<String> getUsername() {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)

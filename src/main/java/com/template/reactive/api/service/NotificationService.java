@@ -1,6 +1,6 @@
 package com.template.reactive.api.service;
 
-import com.template.reactive.api.domain.Notification;
+import com.template.reactive.api.domain.notification.Notification;
 import org.springframework.http.codec.ServerSentEvent;
 import reactor.core.publisher.Flux;
 
