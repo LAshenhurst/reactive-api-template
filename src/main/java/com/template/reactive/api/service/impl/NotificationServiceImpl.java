@@ -25,7 +25,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Flux<ServerSentEvent<String>> subscribe(String username) {
         return SINK.asFlux()
-                .doOnSubscribe(sub -> emit(notificationMapper.generateSubscribeNotification(username)))
+                .doOnSubscribe(sub -> {
+                    emit(notificationMapper.generateSubscribeNotification(username));
+                    log.info("User '{}' is now subscribed to notifications", username);
+                })
                 .filter(notification -> notification.getUsers().contains(username))
                 .map(notification -> ServerSentEvent.builder(notification.toJsonString()).build());
     }

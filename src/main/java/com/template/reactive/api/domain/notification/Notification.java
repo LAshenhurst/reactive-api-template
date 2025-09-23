@@ -1,12 +1,12 @@
 package com.template.reactive.api.domain.notification;
 
 import com.template.reactive.api.helper.TimeHelper;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Set;
 

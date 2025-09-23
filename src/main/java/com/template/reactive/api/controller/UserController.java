@@ -4,31 +4,24 @@ import com.template.reactive.api.common.exceptions.ApiException;
 import com.template.reactive.api.configuration.security.PBKDF2Encoder;
 import com.template.reactive.api.domain.Role;
 import com.template.reactive.api.domain.User;
-import com.template.reactive.api.domain.mapper.NotificationMapper;
-import com.template.reactive.api.domain.notification.Notification;
-import com.template.reactive.api.domain.notification.NotificationRequest;
 import com.template.reactive.api.domain.security.AuthenticationRequest;
 import com.template.reactive.api.domain.security.AuthenticationResponse;
 import com.template.reactive.api.helper.JWTHelper;
 import com.template.reactive.api.helper.SecurityHelper;
 import com.template.reactive.api.service.AuthenticationService;
-import com.template.reactive.api.service.NotificationService;
 import com.template.reactive.api.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -37,12 +30,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User Management API")
 public class UserController {
     private final JWTHelper jwtHelper;
     private final UserService userService;
     private final PBKDF2Encoder passwordEncoder;
-    private final NotificationMapper notificationMapper;
-    private final NotificationService notificationService;
     private final AuthenticationService authenticationService;
 
     private static final Set<String> ROLES = Arrays.stream(Role.values())
@@ -54,7 +46,10 @@ public class UserController {
     public Mono<ResponseEntity<AuthenticationResponse>> login(@RequestBody AuthenticationRequest ar) {
         return userService.findByUsername(ar.getUsername())
                 .filter(userDetails -> passwordEncoder.encode(ar.getPassword()).equals(userDetails.getPassword()))
-                .map(userDetails -> ResponseEntity.ok(new AuthenticationResponse(jwtHelper.generateToken(userDetails))))
+                .map(userDetails -> {
+                    log.info("User '{}' successfully logged in.", ar.getUsername());
+                    return ResponseEntity.ok(new AuthenticationResponse(jwtHelper.generateToken(userDetails)));
+                })
                 .switchIfEmpty(Mono.error(new ApiException(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase())));
     }
 
@@ -85,25 +80,6 @@ public class UserController {
         Mono<List<String>> responseFlow = userService.findByRole(validRole)
                 .map(User::getUsername)
                 .collectList();
-
-        return authenticationService.checkAdminPermissionAndContinue(responseFlow)
-                .map(ResponseEntity::ok);
-    }
-
-
-    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Operation(summary = "Subscribe to receive notifications")
-    public Flux<ServerSentEvent<String>> subscribe() {
-        return SecurityHelper.getUsername().flatMapMany(notificationService::subscribe);
-    }
-
-    @PostMapping(value = "/notification")
-    @Operation(summary = "Submit a test notification to be received by a given user through the subscription system (ADMIN ONLY)")
-    public Mono<ResponseEntity<Void>> sendNotification(@Valid @RequestBody NotificationRequest notificationRequest,
-                                                       @NotNull @RequestParam String user) {
-        Notification notification = notificationMapper.toNotification(notificationRequest.getMessage(), user);
-
-        Mono<Void> responseFlow = Mono.fromRunnable(() -> notificationService.emit(notification));
 
         return authenticationService.checkAdminPermissionAndContinue(responseFlow)
                 .map(ResponseEntity::ok);

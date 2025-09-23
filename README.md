@@ -15,8 +15,7 @@ A template for producing a Reactive SpringBoot API
 - Spring WebFlux
 - SSE (Server Sent Events) and Notification system
 - In-memory database (h2)
-- Database management via Liquibase and r2dbc
-- Request track/trace via Sleuth
+- Database management via Liquibase, hibernate, and r2dbc
 - Basic user management/authentication with JSON Web Tokens
 - Basic exception management
-- API reference via Swagger (default URL: http://localhost:8083/webjars/swagger-ui/index.html)
+- API reference via Swagger (default URL: http://localhost:8083/swagger-ui/index.html)

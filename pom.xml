@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.1</version>
+        <version>3.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.template.reactive</groupId>
@@ -13,12 +13,11 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <java.version>1.8</java.version>
-        <apidoc.version>1.6.9</apidoc.version>
+        <java.version>25</java.version>
+        <apidoc.version>2.8.13</apidoc.version>
         <mapstruct.version>1.4.1.Final</mapstruct.version>
-        <liquibase.version>4.17.2</liquibase.version>
-        <sleuth.version>3.1.3</sleuth.version>
-        <snappy-java.version>1.1.8.4</snappy-java.version>
+        <liquibase.version>4.33.0</liquibase.version>
+        <snappy-java.version>1.1.10.8</snappy-java.version>
     </properties>
 
     <dependencies>
@@ -52,11 +51,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-            <version>${sleuth.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -114,7 +108,7 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
             <version>${apidoc.version}</version>
         </dependency>
         <dependency>
@@ -140,8 +134,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
-                    <source>13</source>
-                    <target>13</target>
+                    <source>25</source>
+                    <target>25</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
