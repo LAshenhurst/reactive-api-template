@@ -4,6 +4,7 @@ import com.template.reactive.api.common.AppConstants;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +17,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleMissingRequestValue(MissingRequestValueException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(String.format(AppConstants.ERROR_MESSAGE_FORMAT, "Missing required Request parameter: " + ex.getName()));
     }
 
@@ -35,7 +36,7 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity
                 .status(status)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(String.format(AppConstants.ERROR_MESSAGE_FORMAT, body));
     }
 
@@ -43,7 +44,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleApiException(ApiException ex) {
         return ResponseEntity
                 .status(ex.getStatus())
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(String.format(AppConstants.ERROR_MESSAGE_FORMAT, ex.getMessage()));
     }
 
@@ -51,7 +52,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleOtherExceptions(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(AppConstants.DEFAULT_ERROR_MESSAGE);
     }
 }

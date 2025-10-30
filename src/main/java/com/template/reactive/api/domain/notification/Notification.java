@@ -16,6 +16,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class Notification {
     private static final String JSON_TEMPLATE = "{\"event\": \"%s\", \"timestamp\": \"%s\"}";
+    private static final String ID_JSON_TEMPLATE = "{\"id\": %d, \"event\": \"%s\", \"timestamp\": \"%s\"}";
+
+    private Long id;
 
     @NotNull
     private Set<String> users;
@@ -27,6 +30,9 @@ public class Notification {
     private Instant timestamp;
 
     public String toJsonString() {
-        return String.format(JSON_TEMPLATE, this.getEvent(), TimeHelper.parseInstant(this.timestamp));
+        if (this.getId() == null) {
+            return String.format(JSON_TEMPLATE, this.getEvent(), TimeHelper.parseInstant(this.getTimestamp()));
+        }
+        return String.format(ID_JSON_TEMPLATE, this.getId(), this.getEvent(), TimeHelper.parseInstant(this.getTimestamp()));
     }
 }

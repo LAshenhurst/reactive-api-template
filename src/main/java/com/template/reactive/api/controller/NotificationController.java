@@ -46,4 +46,12 @@ public class NotificationController {
         return authenticationService.checkAdminPermissionAndContinue(responseFlow)
                 .map(ResponseEntity::ok);
     }
+
+    @PostMapping("/confirm/{notificationId}")
+    @Operation(summary = "Confirm the receipt of a historical notification to remove it from the history")
+    public Mono<ResponseEntity<Void>> confirmNotification(@NotNull @PathVariable Long notificationId) {
+        notificationService.confirmNotification(notificationId).subscribe();
+
+        return Mono.just(ResponseEntity.ok().build());
+    }
 }

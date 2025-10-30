@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private void addUsers() {
         //password is password
         final String password = "Y/zMAg4P07PpGZLiyWutYveUz3f8TV1S0kMlGxWG4o0=";
+
         userRepository.save(userMapper.toEntity(new User( "admin", password, Collections.singleton(Role.ADMIN)))).subscribe();
         userRepository.save(userMapper.toEntity(new User( "user", password, Collections.singleton(Role.USER)))).subscribe();
     }

@@ -1,5 +1,6 @@
 package com.template.reactive.api.domain.mapper;
 
+import com.template.reactive.api.domain.entity.NotificationEntity;
 import com.template.reactive.api.domain.notification.Notification;
 import org.mapstruct.Mapper;
 
@@ -22,6 +23,22 @@ public class NotificationMapper {
                 .event(message)
                 .users(users)
                 .timestamp(Instant.now())
+                .build();
+    }
+
+    public NotificationEntity toEntity(String username, Notification notification) {
+        return NotificationEntity.builder()
+                .username(username)
+                .message(notification.getEvent())
+                .createdTimestamp(Instant.now().getEpochSecond())
+                .build();
+    }
+
+    public Notification toDomain(NotificationEntity notificationEntity) {
+        return Notification.builder()
+                .event(notificationEntity.getMessage())
+                .users(Collections.singleton(notificationEntity.getUsername()))
+                .timestamp(Instant.ofEpochSecond(notificationEntity.getCreatedTimestamp()))
                 .build();
     }
 }

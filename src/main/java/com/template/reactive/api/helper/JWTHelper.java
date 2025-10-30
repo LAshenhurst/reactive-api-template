@@ -1,13 +1,12 @@
 package com.template.reactive.api.helper;
 
+import com.template.reactive.api.common.exceptions.ApiException;
 import com.template.reactive.api.domain.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -73,9 +72,5 @@ public final class JWTHelper {
 
     public Jws<Claims> decodeToken(String token) {
         return parser.parseClaimsJws(token);
-    }
-
-    public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
     }
 }
